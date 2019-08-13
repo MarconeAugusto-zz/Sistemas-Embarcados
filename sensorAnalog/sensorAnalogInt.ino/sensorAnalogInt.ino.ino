@@ -1,10 +1,10 @@
 // Código para medir a temperatura com um termonstato NTC
 #include <math.h>
 
-float sensorPin = A0 ;    // selecione o pino de entrada para o potenciômetro
-float ledPin = 22 ;      // selecione o pino para o LED
-float sensorValue = 0 ;  // variável para armazenar o valor vindo do sensor
-float temperatura = 0, A = 0, B = 0, C = 0, Vs = 0, Vo = 0, Rs = 0;
+int sensorPin = A0 ;    // selecione o pino de entrada para o potenciômetro
+int ledPin = 22 ;      // selecione o pino para o LED
+int sensorValue = 0 ;  // variável para armazenar o valor vindo do sensor
+int temperatura = 0, A = 0, B = 0, C = 0, Vs = 0, Vo = 0, Rs = 0;
 
 void setup ( ) {
   // declara o ledPin como um OUTPUT:
