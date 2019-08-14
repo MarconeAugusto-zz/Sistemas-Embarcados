@@ -40,30 +40,31 @@ void loop(){
   // calcula o valor da resistencia
   Rs = ((50000/Vs)-10000);
 
-  // Temperatura Steinhart-Hart Simplificada
+
+  // Temperatura Steinhart-Hart 
   tempo_1 = micros();
   // calcula o valor da temperatura
   temperatura = calculaTemp(Rs);
   float tempo_2 = micros();
   // imprime via serial o valor da temperatura
-  Serial.print("Temperatura Steinhart-Hart Simplificada = ");
+  Serial.print("Temperatura Steinhart-Hart Completa = ");
   Serial.println(temperatura);
-  Serial.print("Tempo Steinhart-Hart Simplificada = ");
+  Serial.print("Tempo Steinhart-Hart Completa = ");
   Serial.print((tempo_2 - tempo_1)/1000);
   Serial.println(" ms");
 
-  // Temperatura Steinhart-Hart
+  // Temperatura Steinhart-Hart Simplificada
   tempo_1 = 0;
   tempo_1 = micros();
   temperatura = calculaTempSimplificada(Rs);
   float tempo_3 = micros();
   // imprime via serial o valor da temperatura
-  Serial.print("Temperatura Steinhart-Hart Completa = ");
+  Serial.print("Temperatura Steinhart-Hart Simplificada = ");
   Serial.println(temperatura);
-  Serial.print("Tempo Steinhart-Hart Completa = ");
+  Serial.print("Tempo Steinhart-Hart Simplificada = ");
   Serial.print((tempo_3 - tempo_1)/1000);
   Serial.println(" ms");
-
+ 
   // Temperatura Steinhart-Hart Simplificada long int
   tempo_1 = 0;
   tempo_1 = micros();
@@ -71,14 +72,14 @@ void loop(){
   temperaturaLong = calculaTempLong(Rs);
   float tempo_4 = micros();
   // imprime via serial o valor da temperatura
-  Serial.print("Temperatura com Long = ");
+  Serial.print("Temperatura com Long-int = ");
   Serial.println(temperaturaLong);
   Serial.print("Tempo Long = ");
   Serial.print((tempo_4 - tempo_1)/1000);
   Serial.println(" ms");
-  
+ 
   // desliga o ledPin:
   digitalWrite(ledPin , HIGH);
   // parar o programa por um segundo
-  delay(10000);
+  delay(1000);
 }
