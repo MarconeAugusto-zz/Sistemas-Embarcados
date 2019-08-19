@@ -33,8 +33,7 @@ void setup(){
 }
 
 void loop(){
-   // liga o ledPin em
-  tempo_1 = 0;
+ // liga o ledPin em
   digitalWrite(ledPin , LOW);
   
   sensorValue = analogRead(sensorPin);
@@ -44,32 +43,30 @@ void loop(){
   // calcula o valor da resistencia
   Rs = ((50000/Vs)-10000);
 
-  // Temperatura Steinhart-Hart Simplificada
+  // Temperatura Steinhart-Hart 
   tempo_1 = micros();
   // calcula o valor da temperatura
   temperatura = calculaTemp(Rs);
   float tempo_2 = micros();
   // imprime via serial o valor da temperatura
-  Serial.print("Temperatura B = ");
+  Serial.print("Temperatura Steinhart-Hart = ");
   Serial.println(temperatura);
-  Serial.print("Tempo B = ");
+  Serial.print("Tempo Steinhart-Hart = ");
   Serial.print((tempo_2 - tempo_1)/1000);
   Serial.println(" ms");
 
-  // Temperatura Steinhart-Hart
-  tempo_1 = 0;
+  // Temperatura Steinhart-Hart Simplificada
   tempo_1 = micros();
   temperatura = calculaTempSimplificada(Rs);
   float tempo_3 = micros();
   // imprime via serial o valor da temperatura
-  Serial.print("Temperatura Steinhart-Hart = ");
+  Serial.print("Temperatura B = ");
   Serial.println(temperatura);
-  Serial.print("Tempo Steinhart-Hart = ");
+  Serial.print("Tempo B = ");
   Serial.print((tempo_3 - tempo_1)/1000);
   Serial.println(" ms");
 
   // Temperatura Steinhart-Hart Simplificada long int
-  tempo_1 = 0;
   tempo_1 = micros();
   long temperaturaLong = 0;
   temperaturaLong = calculaTempLong(Rs); 
