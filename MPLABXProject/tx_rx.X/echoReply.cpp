@@ -8,7 +8,6 @@
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
-#include <avr/io.h>
 
 #define BAUD 9600
 // set UBRR - pag 203 datasheet - Asynchronous Normal mode
