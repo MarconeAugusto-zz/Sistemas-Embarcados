@@ -7,15 +7,17 @@
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
+#include <avr/delay.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
+#include <string.h>
 
-#define BAUD 9600		// Define baudrate
+
+#define BAUD 9600 // Define baudrate
 #define MYUBRR (F_CPU/16/BAUD-1) // Define a frequência de oscilação
 
-void Init(){
+//Inicia a interface serial
+void uart_init(){
     // Define a frequência de oscilação
 	UBRR0 = MYUBRR;				
 	// Habilita RX e TX
@@ -24,78 +26,99 @@ void Init(){
     UCSR0C = (3 << UCSZ00);
 }
 
-void USART_Transmit(char *data ){
-	//while ( !( UCSR0A & (1<<UDRE0)) ); 	// Aguarda o buffer de transmissão ficar vazio
-	//UDR0 = data; // Armazena os dados no buffer, transmite os dados
-     for (int i=0;data[i]!=0;i++) {
-        while ( !(UCSR0A & (1 << UDRE0)) );
-        UDR0 = data[i];
-    }
-}
-
-uint16_t read_adc(uint8_t channel){
-	ADMUX &= 0xE0;           	// Limpa bits de MUX0-4
-	ADMUX |= channel & 0x07;   	// Define um novo canal a ser lido by setting bits MUX0-2
-	ADCSRB = channel & (1<<3); 	// Define MUX5 como zero
-	ADCSRA |= (1<<ADSC);      	// Inicia uma nova conversão
-	while(ADCSRA & (1<<ADSC));  	// Aguarda até que a conversão seja finalizada
-	return ADCW; 			// Retorna o valor ADC do canal escolhido
-}
-
+//Inicia a conversão analógioco para digital
 void adc_init(void){
     // Determina o fator de divisão como 128
-	ADCSRA |= ((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));
+	ADCSRA |= ((1 << ADPS2)|(1 << ADPS1)|(1 << ADPS0));
     // Define a tensão de referencia do AVCC (5V)
 	ADMUX |= (1 << REFS0);    
     // ADC Enable, ativa o ADC
 	ADCSRA |= (1 << ADEN); 
-    // Inicia uma conversão incial
-	//ADCSRA |= (1<<ADSC);	
+    // Não é necessário alterar nenhum valor MUX para usar a entrada A0
 }
 
+void uart_transmit(char *data){
+     for (int i=0;data[i]!=0;i++) {
+        // Aguarda o buffer de transmissão ficar vazio
+        while ( !(UCSR0A & (1 << UDRE0)) );
+        // Armazena os dados no buffer, transmite os dados
+        UDR0 = data[i];
+    }
+}
 
-double RMS (int repeat){
-	double digital_value;
-	//double average;
+double analog_read(){
+	double val;
+    // Iniciar conversões A2D
+	ADCSRA |= (1 << ADSC);
+	while ( !(ADCSRA & (1 << ADIF)) );
+	val = ADC;
+    // Termina a leitura
+	ADCSRA &= ~(1 << ADSC);
+	return val;
+}
+
+double rms_read(int repeat) {
 	double accumulated = 0;
-    // Canal utilizado para leitura ADC (Porta A0)
-	uint8_t channel = 0;	
-	for (int i = 0; i <= repeat; i++){
-		digital_value = read_adc(channel);
-		accumulated = (digital_value*digital_value) + accumulated;
+	for(int n=0;n<repeat;n++) {
+		accumulated += analog_read();
 	}
-	return sqrt(accumulated/repeat);
+	return accumulated/repeat;
 }
 
-double to_analog(double valor){
-	double analogico;
-	analogico = valor*(5.0/1023.0);
-	return analogico;
+double calculaTemp(double Rs){ // Equação de Steinhart-Hart
+    double A = 1.1122e-03, B = 2.3758e-04, C = 0.6852e-07;
+    double temperatura = 1/(A + (B*log(Rs))+ C*pow(log(Rs),3))-273.15; 
+    return temperatura;  
 }
 
 
 int main(){
-	Init();	// Inicia interface de comunicação
+	uart_init();	// Inicia interface de comunicação
 	adc_init();		// Inicia interface de leitura ADC
     
-	double val = 0;
-	double val_analogico = 0;
-
-	while (true){
+	double val = 0,Vs = 0;
+    char  buffer_temp[5];
+    //char buffer_dig[5], buffer_analog[5], buffer_resistencia[5];
+	
+    while (true){
         // Converte valor lido para RMS
-        val = RMS(100);			
-        // Converte valor RMS para analógico
-        val_analogico = to_analog(val); 
-        char buffer_dig[5], buffer_analog[5];
-        //char buffer_analog[5];
+        val = rms_read(100);	
+        /*
         // Converte o valor double para um vetor char
-        dtostrf(val,5,3,buffer_dig);			
-        dtostrf(val_analogico,5,3,buffer_analog);
-
-        char palavra_dig[10] = "Digital: \n";
-        USART_Transmit(palavra_dig);
-
-
-        _delay_ms(1000);
+        dtostrf(val,4,2,buffer_dig);	
+        char str2[18] = "\n Analog_read(): ";
+        uart_transmit(str2);
+        uart_transmit(buffer_dig);
+        */
+        // Converte valor RMS para digital
+        Vs = val*(5.0/1023.0);
+        /*
+        // Converte o valor double para um vetor char
+        dtostrf(Vs,10,3,buffer_analog);
+        char str3[18] = "\n Digital: ";
+        uart_transmit(str3);
+        uart_transmit(buffer_analog);
+        */
+        
+        // calcula o valor da resistencia
+        double Rs = ((50000/Vs)-10000);
+        /*
+        // Converte o valor double para um vetor char
+        dtostrf(Rs,5,3,buffer_resistencia);
+        char str[18] = "\n Resistencia: ";
+        uart_transmit(str);
+        uart_transmit(buffer_resistencia);
+        */
+        
+        // calcula a temperatura
+        double temperatura = calculaTemp(Rs);
+        
+        // Converte o valor double para um vetor char
+        dtostrf(temperatura,4,2,buffer_temp);
+        char str1[16] = "\nTemperatura = ";
+        uart_transmit(str1);
+        uart_transmit(buffer_temp);
+            
+        _delay_ms(3000);
 		}
 }
