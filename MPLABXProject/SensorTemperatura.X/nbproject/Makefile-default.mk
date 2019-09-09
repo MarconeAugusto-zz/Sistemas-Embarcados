@@ -88,29 +88,11 @@ LDLIBSOPTIONS=
 # fixDeps replaces a bunch of sed/cat/printf statements that slow down the build
 FIXDEPS=fixDeps
 
-# The following macros may be used in the pre and post step lines
-Device=ATmega2560
-ProjectDir=/home/marcone/8\ -\ fase/Sistemas-Embarcados/MPLABXProject/SensorTemperatura.X
-ProjectName=SensorTemperatura
-ConfName=default
-ImagePath=dist/default/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-ImageDir=dist/default/${IMAGE_TYPE}
-ImageName=SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-IsDebug="true"
-else
-IsDebug="false"
-endif
-
 .build-conf:  ${BUILD_SUBPROJECTS}
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-	@echo "--------------------------------------"
-	@echo "User defined post-build step: [avrdude -c avrispmkII -P /dev/ttyACM0 -D -p ${Device} -U flash:w:${ImagePath}:i]"
-	@avrdude -c avrispmkII -P /dev/ttyACM0 -D -p ${Device} -U flash:w:${ImagePath}:i
-	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=ATmega2560
 # ------------------------------------------------------------------------------------
@@ -138,7 +120,7 @@ ${OBJECTDIR}/Temp_ADC.o: Temp_ADC.cpp  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/Temp_ADC.o.d 
 	@${RM} ${OBJECTDIR}/Temp_ADC.o 
-	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/Temp_ADC.o.d" -MT "${OBJECTDIR}/Temp_ADC.o.d" -MT ${OBJECTDIR}/Temp_ADC.o  -o ${OBJECTDIR}/Temp_ADC.o Temp_ADC.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/Temp_ADC.o.d" -MT "${OBJECTDIR}/Temp_ADC.o.d" -MT ${OBJECTDIR}/Temp_ADC.o  -o ${OBJECTDIR}/Temp_ADC.o Temp_ADC.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 else
 ${OBJECTDIR}/Temp_ADC.o: Temp_ADC.cpp  nbproject/Makefile-${CND_CONF}.mk
@@ -154,7 +136,7 @@ endif
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CPPC} $(MP_EXTRA_LD_PRE) -mmcu=atmega2560 ${PACK_COMMON_OPTIONS}   -gdwarf-2 -D__$(MP_PROCESSOR_OPTION)__  -Wl,-Map="dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.map"    -o dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}      -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1 -Wl,--gc-sections -Wl,--start-group  -Wl,-lm -Wl,--end-group 
+	${MP_CPPC} $(MP_EXTRA_LD_PRE) -mmcu=atmega2560 ${PACK_COMMON_OPTIONS}  -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2 -D__$(MP_PROCESSOR_OPTION)__  -Wl,-Map="dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.map"    -o dist/${CND_CONF}/${IMAGE_TYPE}/SensorTemperatura.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}      -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_SIMULATOR=1 -Wl,--gc-sections -Wl,--start-group  -Wl,-lm -Wl,--end-group 
 	
 	
 	
