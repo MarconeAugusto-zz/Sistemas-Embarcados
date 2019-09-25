@@ -24,6 +24,10 @@
     <itemPath>Timeout.h</itemPath>
     <itemPath>Timeout.cpp</itemPath>
     <itemPath>Main.cpp</itemPath>
+    <itemPath>GPIO_Port.cpp</itemPath>
+    <itemPath>GPIO.cpp</itemPath>
+    <itemPath>GPIO_Port.h</itemPath>
+    <itemPath>GPIO.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
