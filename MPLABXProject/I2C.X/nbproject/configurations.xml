@@ -8,6 +8,8 @@
       <itemPath>Queue.h</itemPath>
       <itemPath>Singleton.h</itemPath>
       <itemPath>UART.h</itemPath>
+      <itemPath>GPIO.h</itemPath>
+      <itemPath>GPIO_Port.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +21,8 @@
       <itemPath>main.cpp</itemPath>
       <itemPath>TWI.cpp</itemPath>
       <itemPath>UART.cpp</itemPath>
+      <itemPath>GPIO_Port.cpp</itemPath>
+      <itemPath>GPIO.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

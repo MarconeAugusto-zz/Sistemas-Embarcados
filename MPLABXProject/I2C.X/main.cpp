@@ -4,77 +4,130 @@
  *
  * Created on 24 de Outubro de 2019, 20:38
  */
-#define F_CPU 16000000UL					/* Define CPU clock Frequency e.g. here its 16MHz */
-#include <avr/io.h>							/* Include AVR std. library file */
-#include <util/delay.h>						/* Include inbuilt defined Delay header file */
+#define F_CPU 16000000UL                            /* Define CPU clock Frequency e.g. here its 16MHz */
+#include <avr/io.h>                                 
+#include <util/delay.h>                             
 #include <avr/interrupt.h>
 #include "TWI.h"
 #include "UART.h"
+#include "GPIO.h"
 
+/*          AT24C08A - 8k EEPROM 
+Address    1 | 0 | 1 | 0 | A2 | P1 | P0 | R/W
+ */
 
-#define Slave_Write_Address		0x20
-#define Slave_Read_Address		0x21
+#define EEPROM_1_Write_Address      0xA0            /* 10100000 = 0xA0*/
+#define EEPROM_1_Read_Address		0xA1            /* 10100001 = 0xA1*/
+#define EEPROM_2_Write_Address      0xA8            /* 10101000 = 0xA8*/
+#define EEPROM_2_Read_Address		0xA9            /* 10101001 = 0xA9*/
 
-//#define F_CPU 8000000UL		/* Define CPU clock Frequency 8MHz */
-
-#define EEPROM_Write_Addess		0xA0
-#define EEPROM_Read_Addess		0xA1
-
+UART serial(19200, UART::EIGHT_DB, UART::NONE_PAR, UART::ONE_SB, UART::DS_DISABLE);
+GPIO EEPROM_1(54, GPIO::OUTPUT);                    /* Utilizado para controle do endereçamento da EEPROM_1 - PF0 */
+GPIO EEPROM_2(55, GPIO::OUTPUT);                    /* Utilizado para controle do endereçamento da EEPROM_2 - PF1 */
+    
 int main(int argc, char** argv){
-    UART serial(19200, UART::EIGHT_DB, UART::NONE_PAR, UART::ONE_SB, UART::DS_DISABLE);
-    char array[8] = "EEPROM";                /* Declaração do array usado no teste */
+    
     sei();
+    char array[9] = "EEPROM 1";                     /* Declaração do array usado no teste */
+    EEPROM_1.set(0);                                /* Controla o bit A2 da EEPROM 1 */
+    char array2[9] = "EEPROM 2";                    /* Declaração do array usado no teste */
+    EEPROM_2.set(1);                                /* Controla o bit A2 da EEPROM 2 */
     while(1){
+        serial.puts("\n");                          /* Tirando o lixo da serial */
         serial.puts("\n");
         serial.puts("\n");
-        serial.puts("\n");                      /* Tirando o lixo da serial */
-        serial.puts("\n");
-        _delay_ms(1000);
+        _delay_ms(100);
         serial.puts("Iniciando...");
         _delay_ms(100);
-        TWI twi;                                /* Inicializando I2C */
+        TWI twi;                                    /* Inicializando I2C */
         serial.puts("\n");
-        twi.Start(EEPROM_Write_Addess);         /* Inicia o I2C com o endereço de gravação do dispositivo */
-        twi.Write(0x00);                        /* Endereço de memória inicial para gravação de dados */
+        twi.Start_Wait(EEPROM_1_Write_Address);     /* Inicia o I2C com o endereço de gravação do dispositivo */
+        twi.Write(0x00);                            /* Endereço de memória inicial para gravação de dados */
         serial.puts("Iniciando escrita... ");
         _delay_ms(100);
         serial.puts("\n");
         serial.puts("Escrevendo: ");
         _delay_ms(100);
-        for (int i = 0; i<strlen(array); i++){  /* Escrevendo array de dados */
+        for (int i = 0; i<strlen(array); i++){      /* Escrevendo array de dados */
             twi.Write(array[i]); 
             serial.put(array[i]);
             _delay_ms(500);
         }
         serial.puts("\n");
-        twi.Stop();                             /* Parando I2C */
+        twi.Stop();                                 /* Parando I2C */
         _delay_ms(100);
         serial.puts("Encerrando escrita...");
         serial.puts("\n");
         _delay_ms(100);
-        twi.Start(EEPROM_Write_Addess);         /* Inicia o I2C com o endereço de gravação do dispositivo */
-        twi.Write(0x00);                        /* Escreva o endereço da memória inicial */
-        twi.Repeated_Start(EEPROM_Read_Addess); /* Repeat start I2C SLA+R */
+        twi.Start_Wait(EEPROM_1_Write_Address);     /* Inicia o I2C com o endereço de gravação do dispositivo */
+        twi.Write(0x00);                            /* Escreva o endereço da memória inicial */
+        twi.Repeated_Start(EEPROM_1_Read_Address);  /* Repeat start I2C SLA+R */
         serial.puts("Iniciando leitura... ");
         _delay_ms(100);
         serial.puts("\n");
         serial.puts("Lendo: ");
         _delay_ms(100);
-        for (int i = 0; i<strlen(array); i++){  /* Lendo os dados com ack */
+        for (int i = 0; i<strlen(array); i++){      /* Lendo os dados com ack */
             serial.put(twi.Read_Ack());
             _delay_ms(500);
         }
-        twi.Read_Nack();                        /* Lendo os dados com nack */
+        twi.Read_Nack();                            /* Lendo os dados com nack */
         serial.puts("\n");
         serial.puts("Encerrando...");
         _delay_ms(100);
-        twi.Stop();                             /* Parando I2C */
+        twi.Stop();                                 /* Parando I2C */
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        serial.puts("\n");                          /* Tirando o lixo da serial */
+        serial.puts("\n");
+        serial.puts("\n");
+        _delay_ms(100);
+        serial.puts("Iniciando...");
+        _delay_ms(100);
+        serial.puts("\n");
+        twi.Start_Wait(EEPROM_2_Write_Address);     /* Inicia o I2C com o endereço de gravação do dispositivo */
+        twi.Write(0x20);                            /* Endereço de memória inicial para gravação de dados */
+        serial.puts("Iniciando escrita... ");
+        _delay_ms(100);
+        serial.puts("\n");
+        serial.puts("Escrevendo: ");
+        _delay_ms(100);
+        for (int i = 0; i<strlen(array2); i++){      /* Escrevendo array de dados */
+            twi.Write(array2[i]); 
+            serial.put(array2[i]);
+            _delay_ms(500);
+        }
+        serial.puts("\n");
+        twi.Stop();                                 /* Parando I2C */
+        _delay_ms(100);
+        serial.puts("Encerrando escrita...");
+        serial.puts("\n");
+        _delay_ms(100);
+        twi.Start_Wait(EEPROM_2_Write_Address);     /* Inicia o I2C com o endereço de gravação do dispositivo */
+        twi.Write(0x20);                            /* Escreva o endereço da memória inicial */
+        twi.Repeated_Start(EEPROM_2_Read_Address);  /* Repeat start I2C SLA+R */
+        serial.puts("Iniciando leitura... ");
+        _delay_ms(100);
+        serial.puts("\n");
+        serial.puts("Lendo: ");
+        _delay_ms(100);
+        for (int i = 0; i<strlen(array2); i++){      /* Lendo os dados com ack */
+            serial.put(twi.Read_Ack());
+            _delay_ms(500);
+        }
+        twi.Read_Nack();                            /* Lendo os dados com nack */
+        serial.puts("\n");
+        serial.puts("Encerrando...");
+        _delay_ms(100);
+        twi.Stop();                                 /* Parando I2C */
     }
     return 0;
 }
 
 
 
+
+//#define Slave_Write_Address		0x20
+//#define Slave_Read_Address		0x21
 //#define	count					10
 //
 //
