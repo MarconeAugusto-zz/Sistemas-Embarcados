@@ -7,8 +7,15 @@
 
 #include "TWIMaster.h"
 
-TWIMaster::TWIMaster(BusSpeed bs, Modo md) {  // speed, modo (leitura/ escrita), quantidade de escravos, e array de endereços de escravos
-    TWBR = ((F_CPU/bs)-16)/(2*pow(4,(TWSR&((1<<TWPS0)|(1<<TWPS1)))));
+TWIMaster::TWIMaster(BusSpeed bs) {  // speed, modo (leitura/ escrita), quantidade de escravos, e array de endereços de escravos
+    uint16_t speed;
+    if(bs == 0){
+        speed = 100000UL;
+    }
+    if(bs == 1){
+        speed = 400000UL;
+    }
+    TWBR = ((F_CPU/speed)-16)/(2*pow(4,(TWSR&((1<<TWPS0)|(1<<TWPS1)))));
 }
 
 TWIMaster::TWIMaster(const TWIMaster& orig) {

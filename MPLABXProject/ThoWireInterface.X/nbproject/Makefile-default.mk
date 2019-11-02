@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=TWIMaster.cpp
+SOURCEFILES_QUOTED_IF_SPACED=TWIMaster.cpp TWISlave.cpp
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TWIMaster.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/TWIMaster.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TWIMaster.o ${OBJECTDIR}/TWISlave.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/TWIMaster.o.d ${OBJECTDIR}/TWISlave.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/TWIMaster.o
+OBJECTFILES=${OBJECTDIR}/TWIMaster.o ${OBJECTDIR}/TWISlave.o
 
 # Source Files
-SOURCEFILES=TWIMaster.cpp
+SOURCEFILES=TWIMaster.cpp TWISlave.cpp
 
 # Pack Options 
 PACK_COMPILER_OPTIONS=-I ${DFP_DIR}/include
@@ -140,12 +140,24 @@ ${OBJECTDIR}/TWIMaster.o: TWIMaster.cpp  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/TWIMaster.o 
 	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/TWIMaster.o.d" -MT "${OBJECTDIR}/TWIMaster.o.d" -MT ${OBJECTDIR}/TWIMaster.o  -o ${OBJECTDIR}/TWIMaster.o TWIMaster.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/TWISlave.o: TWISlave.cpp  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/TWISlave.o.d 
+	@${RM} ${OBJECTDIR}/TWISlave.o 
+	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/TWISlave.o.d" -MT "${OBJECTDIR}/TWISlave.o.d" -MT ${OBJECTDIR}/TWISlave.o  -o ${OBJECTDIR}/TWISlave.o TWISlave.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
 else
 ${OBJECTDIR}/TWIMaster.o: TWIMaster.cpp  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/TWIMaster.o.d 
 	@${RM} ${OBJECTDIR}/TWIMaster.o 
 	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/TWIMaster.o.d" -MT "${OBJECTDIR}/TWIMaster.o.d" -MT ${OBJECTDIR}/TWIMaster.o  -o ${OBJECTDIR}/TWIMaster.o TWIMaster.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/TWISlave.o: TWISlave.cpp  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/TWISlave.o.d 
+	@${RM} ${OBJECTDIR}/TWISlave.o 
+	 ${MP_CPPC} $(MP_EXTRA_CC_PRE) -mmcu=atmega2560 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c++ -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/TWISlave.o.d" -MT "${OBJECTDIR}/TWISlave.o.d" -MT ${OBJECTDIR}/TWISlave.o  -o ${OBJECTDIR}/TWISlave.o TWISlave.cpp  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 endif
 
