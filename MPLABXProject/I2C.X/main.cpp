@@ -28,6 +28,7 @@ GPIO EEPROM_2(55, GPIO::OUTPUT);                    /* Utilizado para controle d
 int main(int argc, char** argv){
     
     sei();
+    //serial.puts(BITRATE(TWSR = 0x00));
     char array[9] = "EEPROM 1";                     /* Declaração do array usado no teste */
     EEPROM_1.set(0);                                /* Controla o bit A2 da EEPROM 1 */
     char array2[9] = "EEPROM 2";                    /* Declaração do array usado no teste */

@@ -11,14 +11,14 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <util/twi.h>
-#define SCL_CLK 100000L		/* Define SCL clock frequency 100KHz */
+#define SCL_CLK 400000L		/* Define SCL clock frequency 400KHz */
 #define	TWI_H
-#define BITRATE(TWSR) ((F_CPU/SCL_CLK)-16)/(2*pow(4,(TWSR&((1<<TWPS0)|(1<<TWPS1)))))
+#define BITRATE(TWSR) ((F_CPU/SCL_CLK)-16)/(2*pow(4,(TWSR&((1<<TWPS0)|(1<<TWPS1))))) //passar o valor pelo construtor
 
 class TWI {
 public:
     //Master
-    TWI();
+    TWI();  //mudar o construtor
     ~TWI();
     uint8_t Start(char write_address);
     uint8_t Repeated_Start(char read_address);
