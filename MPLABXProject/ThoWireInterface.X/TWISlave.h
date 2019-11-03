@@ -7,14 +7,25 @@
 
 #ifndef TWISLAVE_H
 #define	TWISLAVE_H
+#define F_CPU 16000000UL                            /* Define CPU clock Frequency e.g. here its 16MHz */
 
-class TWISlave {
+#include <avr/io.h>
+#include <util/delay.h>
+#include <util/twi.h>
+
+class TWISlave{
 public:
     TWISlave(uint8_t adress);
     ~TWISlave();
-    uint8_t slaveSend(const char *data);
-    char slaveReceive();
-private:
+    void init();
+
+private:    
+    uint8_t Slave_Listen();
+    uint8_t Slave_Transmit(char data);
+    char Slave_Receive();
+    char data[255];
+    char rx_buffer[255];
+    uint8_t rx_count,tx_count;
 
 };
 
