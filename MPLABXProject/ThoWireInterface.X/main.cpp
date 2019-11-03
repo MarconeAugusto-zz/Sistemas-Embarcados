@@ -25,11 +25,15 @@ GPIO EEPROM_1(54, GPIO::OUTPUT);                    /* Utilizado para controle d
 GPIO EEPROM_2(55, GPIO::OUTPUT);                    /* Utilizado para controle do endereçamento da EEPROM_2 - PF1 */
     
 int main(int argc, char** argv){
-    sei();
-    
+    EEPROM_1.set(0);                                /* Controla o bit A2 da EEPROM 1 */
+    EEPROM_2.set(1);                                /* Controla o bit A2 da EEPROM 2 */
+
     TWIMaster master(FAST_TWI);
     char  input[1];
     char  output[1];
+
+    sei();
+
     while (1) {
         if (uart.has_data()) {
             input[0] = uart.get();
