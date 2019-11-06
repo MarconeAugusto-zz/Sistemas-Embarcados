@@ -31,15 +31,21 @@ int main(int argc, char** argv){
     EEPROM_2.set(1);                                /* Controla o bit A2 da EEPROM 2 */
 
     TWIMaster master(SLOW_TWI);
-    char  input[] = " ...";
-    char  output[5];
+    char  input[] = " :arduino";
+    char  input2[] = " :EEPROM";
+    char  output[10];
 
     sei();
     while (1) {
         if (uart.has_data()) {
             input[0] = uart.get();
-            master.write(input,5,SLAVE_Address,0x00);
-            master.receive(output,5,SLAVE_Address,0x00);
+            input2[0] = input[0];
+            master.write(input,10,SLAVE_Address,0x00);
+            master.receive(output,10,SLAVE_Address,0x00);
+            uart.puts(output);
+            uart.put('\n');
+            master.write(input2,9,EEPROM_1_Address,0x00);
+            master.receive(output,9,EEPROM_1_Address,0x00);
             uart.puts(output);
         }
     }          
