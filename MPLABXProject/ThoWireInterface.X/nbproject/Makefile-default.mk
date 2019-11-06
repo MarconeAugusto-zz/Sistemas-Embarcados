@@ -102,8 +102,8 @@ ifneq ($(INFORMATION_MESSAGE), )
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/ThoWireInterface.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
-	@echo "User defined post-build step: [avrdude -c avrispmkII -P /dev/ttyACM0 -D -p ${Device} -U flash:w:${ImagePath}:i]"
-	@avrdude -c avrispmkII -P /dev/ttyACM0 -D -p ${Device} -U flash:w:${ImagePath}:i
+	@echo "User defined post-build step: [avrdude -c avrispmkII -P /dev/ttyACM1 -D -p ${Device} -U flash:w:${ImagePath}:i]"
+	@avrdude -c avrispmkII -P /dev/ttyACM1 -D -p ${Device} -U flash:w:${ImagePath}:i
 	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=ATmega2560
