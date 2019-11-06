@@ -7,7 +7,7 @@
 
 #include "TWISlave.h"
 
-TWISlave::TWISlave(uint8_t slave_address):uart(9600, UART::EIGHT_DB, UART::NONE_PAR, UART::ONE_SB, UART::DS_DISABLE){
+TWISlave::TWISlave(uint8_t slave_address){
     TWAR = slave_address;                                   /* Atribuir endereço no registro de endereço TWI */
 	TWCR = (1<<TWEN) | (1<<TWEA) | (1<<TWINT);              /* Ativar TWI, Ativar geração de ack, limpar a interrupção TWI */
     memset(buffer,0x00,255);

@@ -27,7 +27,6 @@ private:
     char Slave_Receive();
     char buffer[255];
     uint8_t count;
-    UART uart;
 };
 
 #endif	/* TWISLAVE_H */
