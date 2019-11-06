@@ -12,6 +12,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <util/twi.h>
+#include <string.h>
+#include "UART.h"
 
 class TWISlave{
 public:
@@ -23,10 +25,9 @@ private:
     uint8_t Slave_Listen();
     uint8_t Slave_Transmit(char data);
     char Slave_Receive();
-    char data[255];
-    char rx_buffer[255];
-    uint8_t rx_count,tx_count;
-
+    char buffer[255];
+    uint8_t count;
+    UART uart;
 };
 
 #endif	/* TWISLAVE_H */

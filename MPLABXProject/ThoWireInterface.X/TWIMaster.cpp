@@ -156,8 +156,11 @@ void TWIMaster::receive(char* data,uint8_t bytes, uint8_t addr,uint8_t reg) {
     Write(reg);                         /* Endereço de memória inicial para gravação de dados */
     Repeated_Start(addr | 1);
     for (int i = 0; i< bytes; i++){     /* Lendo os dados com ack */
-        data[i] = Read_Ack();
+        if(i == bytes -1){
+            data[i] = Read_Nack();                        /* Lendo os dados com nack */
+        }else{
+            data[i] = Read_Ack();
+        }
     }
-    Read_Nack();                        /* Lendo os dados com nack */
     Stop();
 }

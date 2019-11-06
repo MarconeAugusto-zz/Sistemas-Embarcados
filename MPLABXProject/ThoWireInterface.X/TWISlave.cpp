@@ -7,11 +7,11 @@
 
 #include "TWISlave.h"
 
-TWISlave::TWISlave(uint8_t slave_address) {
+TWISlave::TWISlave(uint8_t slave_address):uart(9600, UART::EIGHT_DB, UART::NONE_PAR, UART::ONE_SB, UART::DS_DISABLE){
     TWAR = slave_address;                                   /* Atribuir endereço no registro de endereço TWI */
 	TWCR = (1<<TWEN) | (1<<TWEA) | (1<<TWINT);              /* Ativar TWI, Ativar geração de ack, limpar a interrupção TWI */
-    rx_count = 0;
-    tx_count = 0;    
+    memset(buffer,0x00,255);
+    count = 0;
 }
 
 TWISlave::~TWISlave() {}
@@ -23,6 +23,46 @@ TWISlave::~TWISlave() {}
     Argumento de entrada: - não possui nenhum argumento de entrada.
     Retorno: - retorna o status do evento.
  */
+void TWISlave::init() {
+    char byte;
+	while (1){
+		switch(Slave_Listen()){                 /* Check for any SLA+W or SLA+R */
+			case 0:
+			{
+                count = Slave_Receive();     /* Receive reg to write*/
+                if(count == 255)
+                    count = 0;
+                while(1){
+                    byte = Slave_Receive();     /* Receive data byte*/
+                    if(byte == 0){
+                        break;
+                    }
+                    buffer[count] = byte;
+                    count++;
+                    if(count == 255)
+                        count = 0;
+                }
+                break;
+			}
+			case 1:
+			{
+                while(1){
+                    uint8_t Ack_status = Slave_Transmit(buffer[count]);
+                    if(Ack_status != 0){
+                        count = 0;
+                        break;
+                    }
+                    count++;
+                    if (count == 255)
+                        count = 0;
+                }
+				break;
+			}
+			default:
+				break;
+		}
+	}
+}
 
 uint8_t TWISlave::Slave_Listen(){
 	while(1)
@@ -99,44 +139,4 @@ char TWISlave::Slave_Receive(){
 		return 0;
 	}else
         return -1;                                          /* Outro retorno -1 */
-}
-
-void TWISlave::init() {
-    char byte;
-	while (1){
-		switch(Slave_Listen()){                 /* Check for any SLA+W or SLA+R */
-			case 0:
-			{
-                while(1){
-                    byte = Slave_Receive();     /* Receive data byte*/
-                    if(byte == -1)
-                        continue;
-                    if(byte != 0)
-                        break;
-                    rx_buffer[rx_count] = byte;
-                    rx_count++;
-                    if(rx_count == 255)
-                        rx_count = 0;
-                }
-                break;
-			}
-			case 1:
-			{
-                tx_count = Slave_Receive();     /* Receive reg to read*/
-                if (tx_count == 255)
-                    tx_count = 0;
-                while(1){
-                    uint8_t Ack_status = Slave_Transmit(data[tx_count]);
-                    if(Ack_status == -2)
-                        break;
-                    tx_count++;
-                    if (tx_count == 255)
-                        tx_count = 0;
-                }
-				break;
-			}
-			default:
-				break;
-		}
-	}
 }
