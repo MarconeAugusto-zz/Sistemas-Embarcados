@@ -22,7 +22,6 @@ int main(int argc, char** argv){
 
     TWISlave slave(SLAVE_Address);
 
-    sei();
     slave.init();
 
     return 0;

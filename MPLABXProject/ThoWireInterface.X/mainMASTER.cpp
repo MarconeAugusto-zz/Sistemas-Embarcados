@@ -27,9 +27,7 @@ GPIO EEPROM_1(54, GPIO::OUTPUT);                    /* Utilizado para controle d
 GPIO EEPROM_2(55, GPIO::OUTPUT);                    /* Utilizado para controle do endereçamento da EEPROM_2 - PF1 */
     
 int main(int argc, char** argv){
-    EEPROM_1.set(0);                                /* Controla o bit A2 da EEPROM 1 */
-    EEPROM_2.set(1);                                /* Controla o bit A2 da EEPROM 2 */
-
+    EEPROM_1.set(0);                        /* Controla o bit A2 da EEPROM 1 */
     TWIMaster master(SLOW_TWI);
     char  input[] = "ARDUINO";
     char  input2[] = "EEPROM";
@@ -61,6 +59,6 @@ int main(int argc, char** argv){
             _delay_ms(100);
         }
     }          
-
     return 0;
 }
+
